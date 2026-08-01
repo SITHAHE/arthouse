@@ -53,5 +53,57 @@
   </head>
   <body>
     <div id="root"></div>
+    <!-- pixel:start -->
+    <script>
+      (function () {
+        var PING = 'https://bold-salad-a6fe.xellax2000.workers.dev';
+        var SITE = 'arthouse';
+        if (PING.indexOf('http') !== 0) return;                     // ещё не настроен
+        if (navigator.webdriver) return;                            // пре-рендер, скриншотилка
+        if (/^(localhost|127\.|192\.168\.|0\.0\.0\.0)/.test(location.hostname)) return;
+        try {
+          var q = new URLSearchParams(location.search);
+          if (q.get('me') === '1') localStorage.setItem('px_me', '1');
+          if (localStorage.getItem('px_me')) return;                // свои устройства
+          var n = +(localStorage.getItem('px_n') || 0) + 1;
+          localStorage.setItem('px_n', n);
+          var t0 = Date.now(), depth = 0, sent = {};
+          function send(ev, extra) {
+            if (sent[ev]) return; sent[ev] = 1;
+            var d = { site: SITE, event: ev, visit: n, ref: q.get('s') || document.referrer || '' };
+            for (var k in extra) d[k] = extra[k];
+            var body = JSON.stringify(d);
+            if (!(navigator.sendBeacon && navigator.sendBeacon(PING, body))) {
+              fetch(PING, { method: 'POST', body: body, mode: 'no-cors', keepalive: true });
+            }
+          }
+          send(n > 1 ? 'return' : 'open');
+          addEventListener('scroll', function () {
+            var h = document.documentElement;
+            var p = Math.round((h.scrollTop + innerHeight) / h.scrollHeight * 100);
+            if (p > depth) depth = p;
+            if (depth > 70) send('read', { depth: depth });
+          }, { passive: true });
+          addEventListener('click', function (e) {
+            var a = e.target && e.target.closest && e.target.closest('a, button');
+            if (!a) return;
+            var href = a.getAttribute('href') || '';
+            var what = /^tel:/.test(href) ? 'телефон'
+                     : /^mailto:/.test(href) ? 'почта'
+                     : /t\.me|wa\.me|whatsapp|vk\.com/.test(href) ? 'мессенджер или соцсеть'
+                     : (a.textContent || '').trim().slice(0, 40);
+            if (!what) return;
+            sent.click = 0;
+            send('click', { what: what, sec: Math.round((Date.now() - t0) / 1000) });
+          }, true);
+          addEventListener('visibilitychange', function () {
+            if (document.visibilityState === 'hidden') {
+              send('leave', { sec: Math.round((Date.now() - t0) / 1000), depth: depth });
+            }
+          });
+        } catch (e) { /* пиксель не имеет права ломать сайт */ }
+      })();
+    </script>
+    <!-- pixel:end -->
   </body>
 </html>
