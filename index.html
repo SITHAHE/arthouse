@@ -64,9 +64,10 @@
         try {
           var q = new URLSearchParams(location.search);
           if (q.get('me') === '1') localStorage.setItem('px_me', '1');
-          if (localStorage.getItem('px_me')) return;                // свои устройства
-          var n = +(localStorage.getItem('px_n') || 0) + 1;
-          localStorage.setItem('px_n', n);
+          if (localStorage.getItem('px_me')) return;                // свои устройства (глушит все сайты домена)
+          var KEY = 'px_n_' + SITE;                                 // счётчик отдельный на каждый сайт
+          var n = +(localStorage.getItem(KEY) || 0) + 1;
+          localStorage.setItem(KEY, n);
           var t0 = Date.now(), depth = 0, sent = {};
           function send(ev, extra) {
             if (sent[ev]) return; sent[ev] = 1;
