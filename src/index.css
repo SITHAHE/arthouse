@@ -1,0 +1,314 @@
+@import "tailwindcss";
+
+/* =========================================================================
+   КОНТРАКТ ТОКЕНОВ
+   Имена (роли) фиксированы во всех проектах. Меняются ТОЛЬКО значения —
+   под выбранный стиль из _factory/styles (поля palette / fonts / shape /
+   type_scale карточки). Так брутализм и Apple стоят на одном фундаменте,
+   но выглядят с разных планет.
+
+   Tailwind v4: каждый --color-X даёт утилиты bg-X / text-X / border-X.
+   ========================================================================= */
+@theme {
+  /* ---- Шрифты (роли) — ЗАПОЛНИ ПОД СТИЛЬ (только пары с кириллицей!
+         см. _factory/fonts/cyrillic-pairs.md) ---- */
+  --font-sans: "Golos Text", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-display: "Unbounded", var(--font-sans); /* заголовки; ставь display-шрифт стиля */
+  --font-mono: "PT Mono", ui-monospace, monospace;  /* метки, даты, номера — по карточке stage-violet */
+
+  /* ---- Флюид-шкала (type_scale карточки stage-violet) ---- */
+  --text-hero: clamp(2.6rem, 9vw, 8.5rem);
+  --text-h2:   clamp(1.9rem, 4.4vw, 3.4rem);
+  --text-h3:   clamp(1.15rem, 1.6vw, 1.5rem);
+  --text-num:  clamp(3.4rem, 10vw, 8rem);
+  --text-lead: clamp(1.08rem, 1rem + 0.5vw, 1.35rem);
+
+  /* ---- Цвета: РОЛИ (не ниша!) — ЗАПОЛНИ ПОД СТИЛЬ ---- */
+  --color-bg:        #140620;   /* фон страницы */
+  --color-surface:   #220a30;   /* карточки, поднятые блоки */
+  --color-surface-2: #2e0f3f;   /* второй уровень поверхности */
+  --color-fg:        #f7f0fb;   /* основной текст, заголовки */
+  --color-muted:     #b394c8;   /* вторичный текст (контраст ≥4.5:1 к bg) */
+  --color-line:      #3b1a4c;   /* хайрлайны, границы */
+
+  --color-accent:          #ff3d9a; /* главный акцент: CTA, ссылки, выделения */
+  --color-accent-hi:       #ff66b0; /* ховер/светлее акцента */
+  --color-accent-contrast: #14061a; /* текст на заливке акцентом */
+
+  /* Семантика (статусы) — НЕ трогать под стиль, это не акцент */
+  --color-success: #16a34a;
+  --color-warning: #d97706;
+  --color-danger:  #dc2626;
+
+  /* ---- ФОРМА (язык формы) — ЗАПОЛНИ ПОД СТИЛЬ (поле shape: карточки).
+         Радиус и форма кнопок — РЕШЕНИЕ СТИЛЯ, не константа конвейера.
+         noir: 0-6px и прямые кнопки; fresh: 12px; космос: 16-20px. ---- */
+  /* stage-violet: radius 0 везде — сценический борт, а не капсула */
+  --radius-sm:  0px;    /* мелкие элементы: инпуты, бейджи */
+  --radius:     0px;    /* базовые карточки */
+  --radius-lg:  0px;    /* крупные контейнеры, медиа */
+  --radius-btn: 0px;    /* форма кнопки */
+
+  /* ---- Тени: stage-violet глушит в ноль. Глубина — хайрлайн + слои фона ---- */
+  --shadow-soft: none;
+  --shadow-card: none;
+
+  /* ---- Обработка фото (арт-дирекшн, см. checklists/art-direction.md) ----
+         Один рецепт на весь сайт. Значение — из поля photo: карточки стиля. */
+  --img-filter: contrast(1.1) saturate(1.06) brightness(.98);
+
+  /* ---- Тайминги / easing. stage-violet: «оптическая наводка» — медленный
+         старт, решительный стоп (кривая снята с эталона vivid-co) ---- */
+  --ease-out:   cubic-bezier(0.52, 0.01, 0, 1);
+  --ease-inout: cubic-bezier(0.65, 0, 0.35, 1);
+  --dur-1: 150ms;   /* микро (ховеры) */
+  --dur-2: 300ms;   /* базовое */
+  --dur-3: 420ms;   /* reveal */
+
+  /* ---- Фирменный свет: значения сняты с обложки сообщества ВК ----
+         Живут ТОЛЬКО в шейдере и фоне. На кнопках и тексте градиента нет. */
+  --stage-deep:  #040313;
+  --stage-mid:   #2b0b3a;
+  --stage-glow:  #5c1f66;
+}
+
+/* =========================================================================
+   БАЗА (заморожено)
+   ========================================================================= */
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+
+body {
+  font-family: var(--font-sans);
+  background: var(--color-bg);
+  color: var(--color-fg);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
+}
+
+h1, h2, h3, h4 { font-family: var(--font-display); text-wrap: balance; }
+
+::selection { background: color-mix(in srgb, var(--color-accent) 25%, transparent); }
+
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* =========================================================================
+   РИТМ-ШКАЛА — вертикальный ритм секций (заморожено)
+   ========================================================================= */
+.section-y   { padding-block: clamp(3.5rem, 8vw, 7rem); }
+.section-y-sm{ padding-block: clamp(2.5rem, 5vw, 4rem); }
+/* воздушные стили (noir, lakeside): просторный вариант */
+.section-y-lg{ padding-block: clamp(5rem, 11vw, 10rem); }
+
+.container-x {
+  width: 100%;
+  max-width: 1200px;
+  margin-inline: auto;
+  padding-inline: 1.25rem;
+}
+@media (min-width: 768px) { .container-x { padding-inline: 2rem; } }
+/* широкий контейнер для больших hero-заголовков (правило 2-3 строк H1) */
+.container-wide { max-width: 1400px; }
+
+.pad-safe {
+  padding-left: max(1.25rem, env(safe-area-inset-left));
+  padding-right: max(1.25rem, env(safe-area-inset-right));
+}
+
+/* Полноэкранный hero с учётом панелей Safari на iOS */
+.hero-fill    { min-height: 100vh; min-height: 100lvh; min-height: var(--hero-h, 100lvh); }
+.hero-visible { min-height: 100vh; min-height: 100svh; min-height: var(--app-h, 100dvh); }
+@media (min-width: 768px) { .hero-fill { min-height: 100vh; } }
+
+/* =========================================================================
+   БЛАГОРОДНЫЕ УТИЛИТЫ (стилю-нейтральные, поощряются)
+   ========================================================================= */
+/* единая обработка фото всего сайта (рецепт в --img-filter) */
+.img-treat { filter: var(--img-filter); }
+
+/* защита текста на full-bleed фото: тёмный wash только у кромки */
+.wash-bottom::after {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(180deg, transparent 42%, rgb(0 0 0 / .55));
+  pointer-events: none;
+}
+
+/* зерно/шум (премиум, крафт, editorial) — на fixed-слое, не в скролле */
+.noise {
+  position: fixed; inset: 0; z-index: 40; pointer-events: none; opacity: .05;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.6'/%3E%3C/svg%3E");
+}
+
+/* тонкая линейка-разделитель (editorial-альтернатива карточкам) */
+.rule { border-top: 1px solid var(--color-line); }
+
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* marquee (бегущая строка) — stage-violet: 50s linear, пауза на ховер */
+@keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+.animate-marquee { animation: marquee 50s linear infinite; }
+.marquee-hold:hover .animate-marquee { animation-play-state: paused; }
+.marquee-mask { -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+                mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); }
+
+/* =========================================================================
+   v3-УТИЛИТЫ: типографика и композиция (используются по каталогам
+   layouts/typography-moves.md и composition-moves.md — номер приёма в бриф)
+   ========================================================================= */
+/* табличные цифры: цены, телефоны, статистика (typography-moves №9) */
+.nums { font-variant-numeric: tabular-nums lining-nums; }
+
+/* капс-микро-метка (№2): всегда с letter-spacing */
+.caps-label { font-size: .72rem; text-transform: uppercase; letter-spacing: .2em; }
+
+/* outline-слово (№5): одно слово в заголовке, не весь H1 */
+.text-outline { -webkit-text-stroke: 1.5px var(--color-fg); color: transparent; }
+.text-outline-accent { -webkit-text-stroke: 1.5px var(--color-accent); color: transparent; }
+
+/* вертикальная надпись-рельс (№7) */
+.text-vertical { writing-mode: vertical-rl; }
+
+/* буквица (№12) — только первый абзац лида, editorial-стили */
+.dropcap::first-letter {
+  font-family: var(--font-display); font-size: 3.6em; line-height: .8;
+  float: left; padding-right: .08em; margin-top: .04em; color: var(--color-accent);
+}
+
+/* многоколонник (№13) — текст 60-140 слов, editorial */
+.cols-2 { columns: 2; column-gap: 3rem; column-rule: 1px solid var(--color-line); }
+@media (max-width: 767px) { .cols-2 { columns: 1; } }
+
+/* прайс-строка с точечным заполнителем (section-alternatives «цены») */
+.price-row { display: flex; align-items: baseline; gap: .75rem; }
+.price-fill { flex: 1; border-bottom: 1.5px dotted var(--color-line); transform: translateY(-.25em); }
+
+/* =========================================================================
+   СТИЛЕВЫЕ УТИЛИТЫ stage-violet (по полю ornament: карточки)
+   ========================================================================= */
+/* гигант-заголовок (typography-moves №1): масштаб держит архитектуру */
+.h-giant {
+  font-family: var(--font-display);
+  font-size: var(--text-hero);
+  font-weight: 800;
+  line-height: .92;
+  letter-spacing: -.03em;
+  text-transform: uppercase;
+}
+.h-sect {
+  font-family: var(--font-display);
+  font-size: var(--text-h2);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -.02em;
+  text-transform: uppercase;
+}
+/* гигантская цифра как графика (typography-moves №10) */
+.num-giant {
+  font-family: var(--font-display);
+  font-size: var(--text-num);
+  font-weight: 800;
+  line-height: .86;
+  letter-spacing: -.04em;
+  font-variant-numeric: tabular-nums lining-nums;
+}
+/* моно-метка: даты, номера, координаты */
+.mono-label {
+  font-family: var(--font-mono);
+  font-size: .69rem;
+  text-transform: uppercase;
+  letter-spacing: .22em;
+}
+/* хром-плашка — ТОЛЬКО декоративная метка, никогда на тексте (retro-приём,
+   снят с надувных хром-букв обложки; ornament: карточки разрешает) */
+.chrome-plate {
+  background: linear-gradient(150deg, #9fb0c4 0%, #eef3f9 42%, #8c9cb0 62%, #dfe7f0 100%);
+  color: #14061a;
+}
+/* сценический wash: тьма приходит снизу, кадр сверху остаётся живым */
+.wash-stage::after {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(180deg, rgb(10 3 16 / .10) 0%, rgb(10 3 16 / 0) 34%, rgb(10 3 16 / .82) 100%);
+  pointer-events: none;
+}
+/* Фолбэк шейдера: те же четыре тона потока, но статичными слоями.
+   Зерно шейдер рисует сам (u_grain), отдельный оверлей не нужен. */
+.stage-fallback {
+  background:
+    radial-gradient(110% 85% at 74% 38%, var(--stage-glow) 0%, transparent 60%),
+    radial-gradient(85% 70% at 18% 72%, var(--stage-mid) 0%, transparent 64%),
+    var(--stage-deep);
+}
+/* прайс-строка: ховер поднимает всю строку, без коробок */
+.row-lift { transition: background-color var(--dur-1) var(--ease-out); }
+.row-lift:hover { background: color-mix(in srgb, var(--color-fg) 5%, transparent); }
+
+/* горизонтальная лента (composition-moves №13): хвост-подсказка обязателен */
+.band { scroll-padding-inline: 1.25rem; }
+
+/* wash слева — текст у левого края full-bleed фото */
+.wash-left::after {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(90deg, rgb(0 0 0 / .55), transparent 55%);
+  pointer-events: none;
+}
+
+/* дуотон-фото (riso/pop/промо): ч/б + плашка акцента (art-direction §10) */
+.duo { position: relative; overflow: hidden; }
+.duo > img { filter: grayscale(1) contrast(1.08); }
+.duo::after { content: ''; position: absolute; inset: 0; background: var(--color-accent); mix-blend-mode: multiply; opacity: .85; pointer-events: none; }
+
+/* =========================================================================
+   СТИЛЕВЫЕ ФАКТУРЫ — как карантин, но мягче: применять ТОЛЬКО если поле
+   ornament: карточки стиля называет фактуру (это НЕ дефолт).
+   ========================================================================= */
+/* офсет-тень нео-брутализма (neo-pop): без blur, «физика печати» */
+.shadow-offset { box-shadow: 4px 4px 0 var(--color-fg); }
+.shadow-offset-press:active { box-shadow: 1px 1px 0 var(--color-fg); transform: translate(3px, 3px); }
+
+/* паттерны-подложки (svg-assets §7): только на фоне, opacity уже вшита */
+.bg-dots-soft { background-image: radial-gradient(var(--color-fg) 1px, transparent 1px); background-size: 18px 18px; opacity: .06; }
+.bg-hatch { background-image: repeating-linear-gradient(45deg, var(--color-fg) 0 1px, transparent 1px 10px); opacity: .05; }
+.bg-halftone { background-image: radial-gradient(var(--color-accent) 1.2px, transparent 1.3px); background-size: 8px 8px; opacity: .12; }
+
+/* =========================================================================
+   ⚠ КАРАНТИН ОРНАМЕНТОВ — МАРКЕРЫ ИИ-ДИЗАЙНА ⚠
+   Каждый класс ниже — красный маркер из checklists/design-ru.md (−3 балла).
+   Использовать ТОЛЬКО если поле ornament: карточки стиля ЯВНО разрешает
+   конкретный класс. «Красиво же» — не причина. По умолчанию — НЕ ТРОГАТЬ.
+   ========================================================================= */
+/* градиентный текст в заголовке = ИИ-маркер №1 */
+.text-gradient {
+  background: linear-gradient(100deg, var(--color-accent), var(--color-accent-hi));
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+/* стеклянный навбар — только если стиль настоящий glassmorphism */
+.glass {
+  background: color-mix(in srgb, var(--color-bg) 72%, transparent);
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+}
+/* дот-грид фон — почти всегда шаблонный шум */
+.grid-dots {
+  background-image: radial-gradient(color-mix(in srgb, var(--color-accent) 14%, transparent) 1px, transparent 1px);
+  background-size: 22px 22px;
+}
+/* парящая анимация — из ИИ-набора «пусть что-нибудь летает» */
+@keyframes floaty { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
+.animate-floaty { animation: floaty 6s ease-in-out infinite; }
+
+/* =========================================================================
+   ДОСТУПНОСТЬ: уважаем prefers-reduced-motion (заморожено)
+   ========================================================================= */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .001ms !important;
+    scroll-behavior: auto !important;
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "name": "arthouse",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Замороженный фундамент конвейера. Копируется в каждый сайт. Роли токенов фиксированы, значения — под стиль.",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "deploy": "npm run build && gh-pages -d dist",
+    "factory:shots": "node ../_factory/tools/shots.mjs",
+    "factory:lint": "node ../_factory/tools/factory-lint.mjs",
+    "factory:copy": "node ../_factory/tools/copy-lint.mjs",
+    "factory:report": "node ../_factory/tools/report.mjs"
+  },
+  "dependencies": {
+    "framer-motion": "^12.42.2",
+    "lenis": "^1.3.25",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.3.3",
+    "@vitejs/plugin-react": "^6.0.3",
+    "gh-pages": "^6.3.0",
+    "tailwindcss": "^4.3.3",
+    "vite": "^8.1.1"
+  }
+}
