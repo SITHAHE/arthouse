@@ -68,7 +68,7 @@
           var KEY = 'px_n_' + SITE;                                 // счётчик отдельный на каждый сайт
           var n = +(localStorage.getItem(KEY) || 0) + 1;
           localStorage.setItem(KEY, n);
-          var t0 = Date.now(), depth = 0, sent = {};
+          var t0 = Date.now(), depth = 0, sent = {}, clicks = 0, hotSent = 0;
           function send(ev, extra) {
             if (sent[ev]) return; sent[ev] = 1;
             var d = { site: SITE, event: ev, visit: n, ref: q.get('s') || document.referrer || '' };
@@ -85,21 +85,27 @@
             if (p > depth) depth = p;
             if (depth > 70) send('read', { depth: depth });
           }, { passive: true });
+          // сразу шлём только попытку связаться; остальные клики просто считаем
           addEventListener('click', function (e) {
             var a = e.target && e.target.closest && e.target.closest('a, button');
             if (!a) return;
+            clicks++;
             var href = a.getAttribute('href') || '';
-            var what = /^tel:/.test(href) ? 'телефон'
-                     : /^mailto:/.test(href) ? 'почта'
-                     : /t\.me|wa\.me|whatsapp|vk\.com/.test(href) ? 'мессенджер или соцсеть'
-                     : (a.textContent || '').trim().slice(0, 40);
-            if (!what) return;
+            var hot = /^tel:/.test(href) ? 'телефон'
+                    : /^mailto:/.test(href) ? 'почта'
+                    : /t\.me|wa\.me|whatsapp|vk\.com|instagram/.test(href) ? 'мессенджер или соцсеть'
+                    : '';
+            if (!hot || hotSent >= 2) return;
+            hotSent++;
             sent.click = 0;
-            send('click', { what: what, sec: Math.round((Date.now() - t0) / 1000) });
+            send('click', { what: hot, sec: Math.round((Date.now() - t0) / 1000) });
+          }, true);
+          addEventListener('submit', function () {
+            send('form', { sec: Math.round((Date.now() - t0) / 1000), depth: depth });
           }, true);
           addEventListener('visibilitychange', function () {
             if (document.visibilityState === 'hidden') {
-              send('leave', { sec: Math.round((Date.now() - t0) / 1000), depth: depth });
+              send('leave', { sec: Math.round((Date.now() - t0) / 1000), depth: depth, clicks: clicks });
             }
           });
         } catch (e) { /* пиксель не имеет права ломать сайт */ }
