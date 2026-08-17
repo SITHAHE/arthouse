@@ -19,9 +19,11 @@
 
     <!-- Шрифты стиля. Маркеры не удалять: их обновляет tools/style-tokens.mjs -->
     <!-- FONTS:START -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@700;800&family=Golos+Text:wght@400;500;600&family=PT+Mono&display=swap" rel="stylesheet">
+    <!-- Те же гарнитуры Google (Unbounded, Golos Text, PT Mono), но отдаются
+         с нашего домена: src/fonts.css + src/fonts/*.woff2, подключено в main.jsx.
+         Причина: <link> на fonts.googleapis.com блокирует отрисовку, а Google
+         в России душат — страница ждала бы стиль, который может не прийти.
+         Обновить набор: node _work/arthouse/fetch-fonts.mjs "<css2-url>" src/fonts src/fonts.css -->
     <!-- FONTS:END -->
 
     <script type="application/ld+json">
