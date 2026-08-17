@@ -10,6 +10,8 @@ import Places from './components/Places.jsx'
 import Faq from './components/Faq.jsx'
 import LightField from './components/LightField.jsx'
 import Spark from './components/Spark.jsx'
+import CtaBand from './components/CtaBand.jsx'
+import AgeStep from './components/AgeStep.jsx'
 import { site } from './data.js'
 
 // =========================================================================
@@ -17,10 +19,16 @@ import { site } from './data.js'
 // stage-violet. Все решения зафиксированы в BRIEF.md ДО кода.
 //
 // Ритм секций (composition-moves №7): постер → лента → плотный editorial →
-// воздушный зиг-заг → цифры на всю ширину → фото-лента full-bleed →
-// тренер разворотом → прайс на линейках → цитата → шаги → плакат-CTA →
-// адреса с картой → FAQ → подпись. Двух соседних секций с одинаковой
-// композицией нет. Секций-карточек — ноль.
+// возрастные плашки → полоса действия → пары на хайрлайнах → полоса действия →
+// методика тройкой → полоса действия → фото-лента full-bleed → тренер
+// разворотом → список на линейках → выезды одним кадром → отзывы потоком →
+// полоса действия → шаги → плакат-CTA → адреса с картой → FAQ → подпись.
+// Двух соседних секций с одинаковой композицией нет. Секций-карточек — ноль.
+//
+// Полосы действия (CtaBand) появились по правке заказчицы от 17.08.2026:
+// до неё между первым экраном и подвалом не было ни одной кнопки, и она,
+// пролистав сайт, не нашла, где записаться. Полос четыре, все тихие —
+// хайрлайн и строка, — иначе пять цветных плашек читались бы как баннеры.
 // =========================================================================
 
 // Шапка секции: смещение со 2-й колонки (composition-moves №6) + тихая
@@ -54,7 +62,7 @@ export default function App() {
           <div className="mx-auto max-w-[1400px] px-5 md:px-8">
             <Head
               n="01"
-              title="Восемь направлений для детей, подростков и взрослых"
+              title="Девять направлений для детей, подростков и взрослых"
               lead="Начинают почти все с детского или сценического танца, а дальше уходят туда, где нравится больше. Переходить между направлениями можно в любой момент."
             />
             <div className="mt-14 border-t border-line">
@@ -75,36 +83,73 @@ export default function App() {
           </div>
         </section>
 
-        {/* ВОЗРАСТНЫЕ СТУПЕНИ — зиг-заг 2 колонки с крупным фото, ряды
-            чередуют сторону. Воздушная секция после плотного списка. */}
+        {/* ВОЗРАСТНЫЕ СТУПЕНИ — отдельные плашки по просьбе заказчицы.
+            Порядок внутри плашки: возраст → название → что это → для кого,
+            дальше три кадра (съёмка, зал, сцена). Регалий здесь нет ни строкой:
+            «а потом уже внизу подтверждение того, что мы крутые». */}
         <section id="vozrast" className="section-y-lg bg-surface">
           <div className="mx-auto max-w-[1400px] px-5 md:px-8">
             <Head
               n="02"
-              title="С 4 лет и до взрослых групп"
-              lead="У малышей всё через игру. Школьники попадают в команду, которая вместе едет на конкурсы. Подростки берут хип-хоп и вог. Группы собираем по возрасту и опыту, а не «всех вместе»."
+              title="С 3 лет и до взрослых групп"
+              lead="Группы собираем по возрасту и опыту, а не «всех вместе». Ниже — что происходит на занятии в каждом возрасте и кому он подходит."
             />
-            <div className="mt-16 space-y-16 md:space-y-24">
+            <div className="mt-16 space-y-16 md:space-y-20">
               {site.ages.map((a, i) => (
-                <Reveal key={a.title}>
-                  <div className="grid items-end gap-7 md:grid-cols-12 md:gap-10">
-                    <figure className={`md:col-span-7 ${i % 2 ? 'md:order-2 md:col-start-6' : ''}`}>
-                      <img
-                        src={a.photo}
-                        alt={a.alt}
-                        loading="lazy"
-                        className="img-treat aspect-[4/3] w-full object-cover"
-                      />
-                    </figure>
-                    <div className={`md:col-span-4 ${i % 2 ? 'md:order-1 md:col-start-1' : 'md:col-start-9'}`}>
-                      <p className="num-giant text-accent" style={{ fontSize: 'clamp(2.6rem, 5vw, 4rem)' }}>
-                        {a.title}
-                      </p>
-                      <h3 className="mt-5 font-display text-lg font-bold uppercase leading-tight tracking-[-.01em]">
-                        {a.lead}
-                      </h3>
-                      <p className="mt-4 text-[15px] leading-relaxed text-muted">{a.text}</p>
-                    </div>
+                <AgeStep key={a.title} step={a} index={i} />
+              ))}
+
+              {/* Пятая ступень без фотографий: взрослых групп в архиве студии
+                  нет, а подставлять под «18 и старше» кадр подростков нельзя.
+                  Ступень держит типографика и тот же порядок чтения. */}
+              <Reveal>
+                <article className="grid gap-6 border-t border-line pt-9 md:grid-cols-12 md:gap-10 md:pt-11">
+                  <div className="md:col-span-4">
+                    <p className="num-giant text-accent" style={{ fontSize: 'clamp(2.4rem, 4.4vw, 3.6rem)' }}>
+                      {site.adults.title}
+                    </p>
+                    <h3 className="mt-4 font-display text-xl font-bold uppercase leading-tight tracking-[-.01em] md:text-2xl">
+                      {site.adults.lead}
+                    </h3>
+                  </div>
+                  <div className="md:col-span-7 md:col-start-6">
+                    <p className="text-[15px] leading-relaxed text-fg/90 md:text-[16px]">{site.adults.what}</p>
+                    <p className="mt-5 border-l-2 border-accent pl-5 text-[15px] leading-relaxed text-muted">
+                      <span className="mono-label mr-2 text-accent">Для кого</span>
+                      {site.adults.who}
+                    </p>
+                  </div>
+                </article>
+              </Reveal>
+            </div>
+          </div>
+        </section>
+
+        <CtaBand
+          title="Не знаете, какая группа подойдёт?"
+          note="Напишите возраст ребёнка и удобный зал. Подберём группу и время, запишем на бесплатное пробное."
+        />
+
+        {/* ЧТО ЗА ЭТИМ СТОИТ — то, что раньше было строкой гигантских цифр.
+            Цифры «9 сцен и городов» и «98 отзывов» сняты по правке заказчицы:
+            первая занижает (объездили больше), вторая не про родителя.
+            Осталось то, что она сама назвала важным: ребёнок выступает, у него
+            команда и друзья. Площадки — словами, без счёта. */}
+        <section className="section-y">
+          <div className="mx-auto max-w-[1400px] px-5 md:px-8">
+            {/* Не сетка одинаковых карточек: строки на хайрлайнах, заголовок
+                слева, текст со второй трети. Пары 2×2 читались бы как плитка,
+                а плиток на странице и так хватает. */}
+            <div className="border-t border-line">
+              {site.proofs.map((f, i) => (
+                <Reveal key={f.title} delay={i * 0.05}>
+                  <div className="row-lift grid grid-cols-12 items-baseline gap-x-4 gap-y-3 border-b border-line px-1 py-7 md:gap-x-8 md:py-9">
+                    <h3 className="col-span-12 font-display text-lg font-bold uppercase leading-tight tracking-[-.01em] md:col-span-4 md:text-xl">
+                      {f.title}
+                    </h3>
+                    <p className="col-span-12 max-w-[62ch] text-[15px] leading-relaxed text-muted md:col-span-7 md:col-start-6 md:text-[16px]">
+                      {f.text}
+                    </p>
                   </div>
                 </Reveal>
               ))}
@@ -112,23 +157,43 @@ export default function App() {
           </div>
         </section>
 
-        {/* ДОСТИЖЕНИЯ — гигантские цифры (typography-moves №10).
-            Несимметрично: первая цифра втрое крупнее и занимает половину
-            ряда, три остальные — тихой колонкой справа на хайрлайнах.
-            Четыре равных близнеца в ряд читались бы как ИИ-сетка. */}
-        <section className="section-y">
+        <CtaBand
+          title="Мы возим на конкурсы и выводим на большую сцену"
+          note="Но начинается всё с одного бесплатного занятия, после которого ребёнок решает сам."
+        />
+
+        {/* МЕТОДИКА — новая секция по просьбе заказчицы: «наша методика через
+            игру для маленьких и так далее по возрасту». Формулировки взяты
+            из её же афиш набора в сообществе, не выдуманы. Облик —
+            горизонтальная нумерация, чтобы не повторять список направлений. */}
+        <section id="metodika" className="section-y-sm bg-surface">
           <div className="mx-auto max-w-[1400px] px-5 md:px-8">
-            <div className="grid items-end gap-10 border-y border-line py-12 md:grid-cols-12 md:gap-8">
+            <Head n="03" title="Как мы учим" lead={site.method.lead} />
+
+            {/* Несимметрично: первая ступень крупно на половину ряда, две
+                другие тихой колонкой справа. Три равные колонки повторили бы
+                композицию секции «Три шага» ниже по странице — на одной
+                странице два одинаковых триптиха читаются как шаблон. */}
+            <div className="mt-14 grid gap-10 md:grid-cols-12 md:gap-8">
               <Reveal className="md:col-span-5">
-                <p className="num-giant text-fg">{site.facts[0].value}</p>
-                <p className="mt-4 max-w-[26ch] text-lg leading-snug text-fg/90">{site.facts[0].label}</p>
+                <div className="border-t-2 border-accent pt-6">
+                  <p className="mono-label text-accent">{site.method.steps[0].age}</p>
+                  <h3 className="mt-4 font-display text-2xl font-bold uppercase leading-tight tracking-[-.01em] md:text-4xl">
+                    {site.method.steps[0].title}
+                  </h3>
+                  <p className="text-lead mt-5 max-w-[40ch] text-muted">{site.method.steps[0].text}</p>
+                </div>
               </Reveal>
+
               <div className="md:col-span-6 md:col-start-7">
-                {site.facts.slice(1).map((f, i) => (
-                  <Reveal key={f.label} delay={i * 0.06}>
-                    <div className="flex items-baseline gap-5 border-t border-line py-4">
-                      <span className="nums shrink-0 font-display text-3xl font-bold tracking-[-.02em] text-accent">{f.value}</span>
-                      <span className="text-[15px] leading-snug text-muted">{f.label}</span>
+                {site.method.steps.slice(1).map((s, i) => (
+                  <Reveal key={s.n} delay={i * 0.06}>
+                    <div className="border-t border-line py-7 first:pt-0 md:py-8">
+                      <p className="mono-label text-accent">{s.age}</p>
+                      <h3 className="mt-3 font-display text-lg font-bold uppercase leading-tight tracking-[-.01em] md:text-xl">
+                        {s.title}
+                      </h3>
+                      <p className="mt-3 max-w-[52ch] text-[15px] leading-relaxed text-muted">{s.text}</p>
                     </div>
                   </Reveal>
                 ))}
@@ -137,13 +202,18 @@ export default function App() {
           </div>
         </section>
 
+        <CtaBand
+          title="Первое занятие бесплатное"
+          note="Приходить в чём удобно. Не понравится — просто не вернётесь, никаких обязательств и предоплат."
+        />
+
         {/* ФОТО — full-bleed лента (composition-moves №8 + №13). Заголовок
             в контейнере, лента выходит за него до кромки экрана. */}
         <section id="foto" className="section-y-sm">
           <div className="mx-auto max-w-[1400px] px-5 md:px-8">
             <div className="flex flex-wrap items-end justify-between gap-6">
               <div>
-                <p className="nums font-mono text-sm text-muted/70">03</p>
+                <p className="nums font-mono text-sm text-muted/70">04</p>
                 <h2 className="h-sect mt-5 max-w-[24ch]">Сцена, зал и закулисье</h2>
               </div>
               <p className="max-w-[34ch] text-[15px] text-muted">
@@ -175,7 +245,7 @@ export default function App() {
               </figure>
 
               <div className="md:col-span-6 md:col-start-7">
-                <p className="nums font-mono text-sm text-muted/70">04</p>
+                <p className="nums font-mono text-sm text-muted/70">05</p>
                 <h2 className="h-sect mt-5">{site.coach.name}</h2>
                 <p className="mt-4 text-[15px] text-muted">{site.coach.role}</p>
 
@@ -205,7 +275,7 @@ export default function App() {
         <section id="zanyatiya" className="section-y">
           <div className="mx-auto max-w-[1400px] px-5 md:px-8">
             <Head
-              n="05"
+              n="06"
               title="Что входит в занятия"
               lead="Ребёнок приходит танцевать, а получает целую историю: свой номер, костюм, большую сцену и съёмку, которую потом пересматривают всей семьёй."
             />
@@ -267,10 +337,15 @@ export default function App() {
           </div>
         </section>
 
+        <CtaBand
+          title="Столько же слов про вашего ребёнка мы напишем через год"
+          note="Пока просто приходите посмотреть, как проходит занятие в его возрасте."
+        />
+
         {/* КАК НАЧАТЬ — горизонтальная нумерация 01 → 02 → 03 */}
         <section className="section-y">
           <div className="mx-auto max-w-[1400px] px-5 md:px-8">
-            <Head n="06" title="Три шага до первого занятия" />
+            <Head n="08" title="Три шага до первого занятия" />
             <div className="mt-14 grid gap-10 md:grid-cols-3 md:gap-8">
               {site.steps.map((s, i) => (
                 <Reveal key={s.n} delay={i * 0.07}>
@@ -295,7 +370,7 @@ export default function App() {
           <div className="relative z-10 mx-auto max-w-[1400px] px-5 py-20 md:px-8 md:py-28">
             <div className="grid gap-12 md:grid-cols-12">
               <div className="md:col-span-6">
-                <p className="nums font-mono text-sm text-fg/60">07</p>
+                <p className="nums font-mono text-sm text-fg/60">09</p>
                 <h2 className="h-giant mt-5" style={{ fontSize: 'clamp(2.1rem, 5.6vw, 4.6rem)' }}>
                   Приходите<br />танцевать
                 </h2>
@@ -333,7 +408,7 @@ export default function App() {
         {/* АДРЕСА — разворот с картой, залы переключаются кликом */}
         <section id="adresa" className="section-y">
           <div className="mx-auto max-w-[1400px] px-5 md:px-8">
-            <Head n="08" title="Два зала в Колпино" />
+            <Head n="10" title="Два зала в Колпино" />
             <div className="mt-14">
               <Places />
             </div>
@@ -345,7 +420,7 @@ export default function App() {
           <div className="mx-auto max-w-[1400px] px-5 md:px-8">
             <div className="grid gap-10 md:grid-cols-12">
               <div className="md:col-span-3">
-                <p className="nums font-mono text-sm text-muted/70">09</p>
+                <p className="nums font-mono text-sm text-muted/70">11</p>
                 <h2 className="h-sect mt-5">Коротко о главном</h2>
               </div>
               <div className="md:col-span-8 md:col-start-5">

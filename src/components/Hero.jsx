@@ -59,7 +59,7 @@ export default function Hero() {
           </a>
           <a
             href={site.contacts.phoneHref}
-            className="nums text-[15px] font-medium text-fg underline decoration-fg/30 underline-offset-[6px] transition-colors hover:text-accent"
+            className="nums inline-flex h-11 items-center text-[15px] font-medium text-fg underline decoration-fg/30 underline-offset-[6px] transition-colors hover:text-accent"
           >
             {site.contacts.phone}
           </a>

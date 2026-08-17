@@ -1,17 +1,17 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="ru">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Школа танцев ART HOUSE в Колпино: дети с 4 лет, подростки и взрослые</title>
-    <meta name="description" content="Танцевальная студия ART HOUSE в Колпино: два зала, дети с 4 лет, подростки и взрослые. Хип-хоп, джаз-фанк, вог, детский и сценический танец. Первое занятие бесплатно, коллективы выступают в Кремле и на Газпром Арене." />
+    <title>Школа танцев ART HOUSE в Колпино: дети с 3 лет, подростки и взрослые</title>
+    <meta name="description" content="Танцевальная студия ART HOUSE в Колпино: два зала, дети с 3 лет, подростки и взрослые. Хип-хоп, джаз-фанк, вог, детский и сценический танец. Первое занятие бесплатно, коллективы выступают в Кремле и на Газпром Арене." />
     <link rel="canonical" href="https://sithahe.github.io/arthouse/" />
     <meta name="theme-color" content="#140620" />
 
     <meta property="og:type" content="website" />
     <meta property="og:title" content="Школа танцев ART HOUSE в Колпино" />
-    <meta property="og:description" content="Два зала в Колпино, дети с 4 лет, подростки и взрослые. Первое занятие бесплатно." />
+    <meta property="og:description" content="Два зала в Колпино, дети с 3 лет, подростки и взрослые. Первое занятие бесплатно." />
     <meta property="og:image" content="https://sithahe.github.io/arthouse/img/solo-1.webp" />
     <meta property="og:locale" content="ru_RU" />
 
@@ -29,7 +29,7 @@
       "@context": "https://schema.org",
       "@type": "SportsActivityLocation",
       "name": "Школа танцев ART HOUSE",
-      "description": "Танцевальная студия в Колпино: детский и сценический танец, хип-хоп, джаз-фанк, вог, афро, латина, растяжка и акробатика. Дети с 4 лет, подростки и взрослые.",
+      "description": "Танцевальная студия в Колпино: детский и сценический танец, хип-хоп, джаз-фанк, вог, афро, латина, растяжка и акробатика. дети с 3 лет, подростки и взрослые.",
       "telephone": "+7 921 630-94-65",
       "url": "https://sithahe.github.io/arthouse/",
       "sameAs": ["https://vk.com/art_houseproject", "https://t.me/arthouse_dance_voice"],
@@ -52,5 +52,64 @@
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
+    <!-- pixel:start -->
+    <script>
+      (function () {
+        var PING = 'https://bold-salad-a6fe.xellax2000.workers.dev';
+        var SITE = 'arthouse';
+        if (PING.indexOf('http') !== 0) return;                     // ещё не настроен
+        if (navigator.webdriver) return;                            // пре-рендер, скриншотилка
+        if (/^(localhost|127\.|192\.168\.|0\.0\.0\.0)/.test(location.hostname)) return;
+        try {
+          var q = new URLSearchParams(location.search);
+          if (q.get('me') === '1') localStorage.setItem('px_me', '1');
+          if (localStorage.getItem('px_me')) return;                // свои устройства (глушит все сайты домена)
+          var KEY = 'px_n_' + SITE;                                 // счётчик отдельный на каждый сайт
+          var n = +(localStorage.getItem(KEY) || 0) + 1;
+          localStorage.setItem(KEY, n);
+          var t0 = Date.now(), depth = 0, sent = {}, clicks = 0, hotSent = 0;
+          function send(ev, extra) {
+            if (sent[ev]) return; sent[ev] = 1;
+            var d = { site: SITE, event: ev, visit: n, ref: q.get('s') || document.referrer || '' };
+            for (var k in extra) d[k] = extra[k];
+            var body = JSON.stringify(d);
+            if (!(navigator.sendBeacon && navigator.sendBeacon(PING, body))) {
+              fetch(PING, { method: 'POST', body: body, mode: 'no-cors', keepalive: true });
+            }
+          }
+          send(n > 1 ? 'return' : 'open');
+          addEventListener('scroll', function () {
+            var h = document.documentElement;
+            var p = Math.round((h.scrollTop + innerHeight) / h.scrollHeight * 100);
+            if (p > depth) depth = p;
+            if (depth > 70) send('read', { depth: depth });
+          }, { passive: true });
+          // сразу шлём только попытку связаться; остальные клики просто считаем
+          addEventListener('click', function (e) {
+            var a = e.target && e.target.closest && e.target.closest('a, button');
+            if (!a) return;
+            clicks++;
+            var href = a.getAttribute('href') || '';
+            var hot = /^tel:/.test(href) ? 'телефон'
+                    : /^mailto:/.test(href) ? 'почта'
+                    : /t\.me|wa\.me|whatsapp|vk\.com|instagram/.test(href) ? 'мессенджер или соцсеть'
+                    : '';
+            if (!hot || hotSent >= 2) return;
+            hotSent++;
+            sent.click = 0;
+            send('click', { what: hot, sec: Math.round((Date.now() - t0) / 1000) });
+          }, true);
+          addEventListener('submit', function () {
+            send('form', { sec: Math.round((Date.now() - t0) / 1000), depth: depth });
+          }, true);
+          addEventListener('visibilitychange', function () {
+            if (document.visibilityState === 'hidden') {
+              send('leave', { sec: Math.round((Date.now() - t0) / 1000), depth: depth, clicks: clicks });
+            }
+          });
+        } catch (e) { /* пиксель не имеет права ломать сайт */ }
+      })();
+    </script>
+    <!-- pixel:end -->
   </body>
 </html>
